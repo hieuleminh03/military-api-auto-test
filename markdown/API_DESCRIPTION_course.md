@@ -1,0 +1,18 @@
+# API Endpoint Description - Course
+
+| Role    | Endpoint         | Method | Body (if any) | Description (VN)                       | Sample Res Data                  |
+|---------|------------------|--------|---------------|----------------------------------------|----------------------------------|
+| Student | /student/courses | GET | | Lấy danh sách khóa học của học viên | [ { id, name, ... } ] |
+| Student | /student/courses/grades | GET | | Lấy điểm các khóa học của học viên | [ { course_id, grade, ... } ] |
+| Admin | /courses | GET | | Lấy danh sách khóa học | [ { id, name, ... } ] |
+| Admin | /courses | POST | {<br>&nbsp;&nbsp;subject_name: string, // required<br>&nbsp;&nbsp;term_id: integer, // required, phải tồn tại<br>&nbsp;&nbsp;enroll_limit: integer, // required, >= 1<br>&nbsp;&nbsp;midterm_weight: number, // required, >= 0, <= 1<br>&nbsp;&nbsp;code?: string, // optional, tự động sinh nếu không truyền<br>} | Thêm mới khóa học <br><br>**Lưu ý:**<br>- `term_id` phải tồn tại.<br>- Nếu không truyền `code`, hệ thống sẽ tự sinh mã lớp.<br>- `enroll_limit` phải >= 1.<br>- `midterm_weight` phải từ 0 đến 1.<br> | { id, ... } |
+| Admin | /courses/:id | GET | | Lấy thông tin một khóa học | { id, name, ... } |
+| Admin | /courses/:id | PUT | {<br>&nbsp;&nbsp;subject_name?: string,<br>&nbsp;&nbsp;enroll_limit?: integer, // nếu truyền, không được nhỏ hơn số SV đã đăng ký<br>&nbsp;&nbsp;midterm_weight?: number, // nếu truyền, >= 0, <= 1<br>} | Cập nhật khóa học <br><br>**Lưu ý:**<br>- Không thể thay đổi `term_id` sau khi đã tạo.<br>- Nếu cập nhật `enroll_limit`, giá trị mới không được nhỏ hơn số sinh viên đã đăng ký hiện tại.<br>- `midterm_weight` phải từ 0 đến 1.<br> | { id, ... } |
+| Admin | /courses/:id | DELETE | | Xóa khóa học <br><br>**Lưu ý:**<br>- Không thể xóa nếu có sinh viên đã đăng ký.<br> | { message } |
+| Admin | /courses/:id/students | GET | | Lấy danh sách học viên trong khóa học | [ { id, name, ... } ] |
+| Admin | /courses/:id/students | POST | {<br>&nbsp;&nbsp;user_id: integer, // required, user phải tồn tại và có role=student<br>} | Thêm học viên vào khóa học <br><br>**Lưu ý:**<br>- Không thể đăng ký sau `roster_deadline` của kỳ học.<br>- Không thể đăng ký nếu lớp đã đủ `enroll_limit`.<br>- Một sinh viên không thể đăng ký 2 lần vào cùng một lớp.<br> | { message } |
+| Admin | /courses/:id/students/bulk | POST | [ { user_id: integer, ... } ] | Thêm nhiều học viên vào khóa học <br><br>**Lưu ý:**<br>- Các rule như thêm từng học viên áp dụng cho từng phần tử.<br> | { message } |
+| Admin | /courses/:courseId/students/:userId | DELETE | | Xóa học viên khỏi khóa học | { message } |
+| Admin | /courses/:courseId/students/:userId/grade | PUT | {<br>&nbsp;&nbsp;midterm_grade?: number,<br>&nbsp;&nbsp;final_grade?: number<br>} | Cập nhật điểm học viên <br><br>**Lưu ý:**<br>- Chỉ được nhập điểm sau `grade_entry_date` của kỳ học.<br>- Khi có đủ cả điểm giữa kỳ và cuối kỳ, hệ thống sẽ tự động tính điểm tổng kết và cập nhật trạng thái (failed nếu < 4, completed nếu >= 4).<br> | { message } |
+| Admin | /courses/:id/grades/bulk | PUT | [ { user_id: integer, midterm_grade?: number, final_grade?: number } ] | Cập nhật điểm hàng loạt <br><br>**Lưu ý:**<br>- Các rule như cập nhật điểm từng học viên áp dụng cho từng phần tử.<br> | { message } |
+| Admin | /courses/getAllByTerm/:id | GET | | Lấy tất cả khóa học theo học kỳ | [ { id, name, ... } ] |

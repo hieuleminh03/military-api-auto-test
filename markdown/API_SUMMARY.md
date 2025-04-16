@@ -2,24 +2,6 @@
 
 This document summarizes the available API test tools for the Military Management System backend.
 
-## API Endpoints
-
-All API endpoints have been mapped in `lib/endpoint.js`, organized by functionality:
-
-- Authentication
-- Term management
-- Course management
-- Class management
-- Fitness test management
-- Violation record management
-- Equipment management
-- Allowance management
-- Search functionality
-- Student profile access
-- Grade management
-- Manager operations
-- Dashboard views
-
 ## API Wrappers
 
 API wrappers are organized in `lib/api_list/` directory with the following modules:

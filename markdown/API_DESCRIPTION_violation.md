@@ -1,0 +1,9 @@
+# API Endpoint Description - Violation
+
+| Role    | Endpoint         | Method | Body (if any) | Description (VN)                       | Sample Res Data                  |
+|---------|------------------|--------|---------------|----------------------------------------|----------------------------------|
+| Student | /student/violations | GET | | Lấy danh sách vi phạm của học viên | [ { id, type, date, ... } ] |
+| Manager | /manager/violations/student/:studentId | GET | | Lấy vi phạm của sinh viên <br><br>**Lưu ý:**<br>- Chỉ trả về vi phạm của user có role=student.<br> | [ { id, type, ... } ] |
+| Manager | /manager/violations | POST | {<br>&nbsp;&nbsp;student_id: integer, // required, user phải tồn tại và có role=student<br>&nbsp;&nbsp;violation_name: string, // required, max 100 ký tự<br>&nbsp;&nbsp;violation_date: date, // required, không được sau ngày hiện tại<br>} | Thêm vi phạm <br><br>**Lưu ý:**<br>- Chỉ manager mới được tạo.<br>- Chỉ tạo cho user có role=student.<br>- Ngày vi phạm không được sau ngày hiện tại.<br>- Mỗi bản ghi vi phạm gắn với manager tạo ra.<br> | { id, ... } |
+| Manager | /manager/violations/:id | PUT | {<br>&nbsp;&nbsp;violation_name: string, // required, max 100 ký tự<br>&nbsp;&nbsp;violation_date: date, // required, không được sau ngày hiện tại<br>} | Cập nhật vi phạm <br><br>**Lưu ý:**<br>- Chỉ manager tạo ra mới được sửa.<br>- Chỉ sửa trong vòng 1 ngày kể từ khi tạo.<br>- Không thể thay đổi học viên.<br>- Ngày vi phạm không được sau ngày hiện tại.<br> | { message } |
+| Manager | /manager/violations/:id | DELETE | | Xóa vi phạm <br><br>**Lưu ý:**<br>- Chỉ manager tạo ra mới được xóa.<br>- Chỉ xóa trong vòng 1 ngày kể từ khi tạo.<br> | { message } |
