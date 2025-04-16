@@ -1,6 +1,7 @@
 # military-test
 
 CLI để test API
+Xem detail tại [chi tiết api](API_SUMMARY.md)
 
 ## Installation
 
